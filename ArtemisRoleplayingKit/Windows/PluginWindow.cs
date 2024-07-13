@@ -97,6 +97,7 @@ namespace RoleplayingVoice {
         private bool _qualityAssuranceMode;
         private bool _twitchStreamTriggersIfShouter;
         private float _npcPlaybackSpeed;
+        private int _userNpcVoicePreferenceIndex;
         private bool _ignoreRetainerSpeech;
         private bool _debugMode;
         private FileSystemWatcher _fileSystemWatcher;
@@ -177,6 +178,7 @@ namespace RoleplayingVoice {
                     _streamPath = configuration.StreamPath;
                     _twitchStreamTriggersIfShouter = configuration.TwitchStreamTriggersIfShouter;
                     _npcPlaybackSpeed = configuration.NPCSpeechSpeed;
+                    _userNpcVoicePreferenceIndex = (int)configuration.UserNpcVoicePreference;
                     _ignoreRetainerSpeech = configuration.DontVoiceRetainers;
                     _debugMode = configuration.DebugMode;
                     _tuneIntoTwitchStreamPrompt = configuration.TuneIntoTwitchStreamPrompt;
@@ -434,6 +436,7 @@ namespace RoleplayingVoice {
             try {
                 ImGui.TextWrapped("NPC speech is currently a work in progress, and will likely slowly until a majority of dialogue is created and cached.");
                 ImGui.Checkbox("Turn Off NPC Dialogue", ref _npcSpeechGenerationDisabled);
+                ImGui.Combo("NPC Dialogue Source Preference", ref _userNpcVoicePreferenceIndex, UserNpcVoicePreference.Labels, UserNpcVoicePreference.Labels.Length);
                 ImGui.Checkbox("Ignore Retainer Speech", ref _ignoreRetainerSpeech);
                 ImGui.Checkbox("Read Quest Objectives", ref _readQuestObjectives);
                 ImGui.Checkbox("Read Location And Toast Notifications", ref _readLocationAndToastNotifications);
@@ -685,6 +688,7 @@ namespace RoleplayingVoice {
             configuration.QualityAssuranceMode = _qualityAssuranceMode;
             configuration.TwitchStreamTriggersIfShouter = _twitchStreamTriggersIfShouter;
             configuration.NPCSpeechSpeed = _npcPlaybackSpeed;
+            configuration.UserNpcVoicePreference = (UserNpcVoicePreferenceOption)_userNpcVoicePreferenceIndex;
             configuration.DontVoiceRetainers = _ignoreRetainerSpeech;
             configuration.TuneIntoTwitchStreamPrompt = _tuneIntoTwitchStreamPrompt;
             configuration.DebugMode = _debugMode;

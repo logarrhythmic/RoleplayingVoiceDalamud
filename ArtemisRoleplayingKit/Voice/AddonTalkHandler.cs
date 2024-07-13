@@ -969,6 +969,12 @@ namespace RoleplayingVoiceDalamud.Voice {
                         string npcData = JsonConvert.SerializeObject(reportData);
                         bool foundName = false;
                         string value = FeoUlRetainerCleanup(nameToUse, StripPlayerNameFromNPCDialogue(PhoneticLexiconCorrection(ConvertRomanNumberals(message)), _clientState.LocalPlayer.Name.TextValue, ref foundName));
+                        
+                        UserNpcVoicePreferenceFlags userNpcVoicePreference = UserNpcVoicePreference.Map(_plugin.Config.UserNpcVoicePreference);
+                        var voiceLinePriority = UserNpcVoicePreference.FlagsToVoiceLinePriority(userNpcVoicePreference);
+                        if (!userNpcVoicePreference.HasFlag(UserNpcVoicePreferenceFlags.Force))
+                            voiceLinePriority = foundName || Conditions.IsBoundByDuty ? VoiceLinePriority.AlternativeCache : voiceLinePriority;
+                        
                         string arcValue = FeoUlRetainerCleanup(nameToUse, StripPlayerNameFromNPCDialogueArc(message));
                         string backupVoice = PickVoiceBasedOnTraits(nameToUse, gender, race, body);
                         Stopwatch downloadTimer = Stopwatch.StartNew();
@@ -977,7 +983,7 @@ namespace RoleplayingVoiceDalamud.Voice {
                         }
                         for (int i = 0; i < 2; i++) {
                             var stream =
-                            await _plugin.NpcVoiceManager.GetCharacterAudio(value, arcValue, nameToUse, gender, backupVoice, false, voiceModel, npcData, redoLine, false, foundName || Conditions.IsBoundByDuty ? VoiceLinePriority.AlternativeCache : VoiceLinePriority.None);
+                            await _plugin.NpcVoiceManager.GetCharacterAudio(value, arcValue, nameToUse, gender, backupVoice, false, voiceModel, npcData, redoLine, false, voiceLinePriority);
                             if (!previouslyAddedLines.Contains(value + nameToUse)) {
                                 _npcVoiceHistoryItems.Add(new NPCVoiceHistoryItem(value, arcValue, nameToUse, gender, backupVoice, false, true, npcData, redoLine));
                                 previouslyAddedLines.Add(value + nameToUse);

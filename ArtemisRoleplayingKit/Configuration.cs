@@ -9,6 +9,60 @@ using System.Collections.Generic;
 using System.IO;
 
 namespace RoleplayingVoice {
+    #region could be separated into a UserNpcVoicePreference.cs
+    [Flags]
+    public enum UserNpcVoicePreferenceFlags
+    {
+        PreferElevenlabs = VoiceLinePriority.Elevenlabs,
+        PreferAlternativeCache = VoiceLinePriority.AlternativeCache,
+        PreferXTTS = VoiceLinePriority.XTTS,
+        None = VoiceLinePriority.None,
+        Force = 0x80,
+        ForceElevenlabs = VoiceLinePriority.Elevenlabs | Force,
+        ForceAlternativeCache = VoiceLinePriority.AlternativeCache | Force,
+        ForceXTTS = VoiceLinePriority.XTTS | Force
+    }
+
+    public enum UserNpcVoicePreferenceOption
+    {
+        ForceElevenlabs = 0,
+        PreferElevenlabs = 1,
+        None = 2,
+        PreferAlternativeCache = 3,
+        ForceAlternativeCache = 4
+    }
+
+    public static class UserNpcVoicePreference
+    {
+        public static string[] Labels = new[] {
+            "Force ARK",
+            "Prefer ARK",
+            "Default",
+            "Prefer XIVV",
+            "Force XIVV"
+        };
+        public static UserNpcVoicePreferenceFlags Map(UserNpcVoicePreferenceOption value) => value switch
+        {
+            UserNpcVoicePreferenceOption.ForceElevenlabs => UserNpcVoicePreferenceFlags.ForceElevenlabs,
+            UserNpcVoicePreferenceOption.PreferElevenlabs => UserNpcVoicePreferenceFlags.PreferElevenlabs,
+            UserNpcVoicePreferenceOption.None => UserNpcVoicePreferenceFlags.None,
+            UserNpcVoicePreferenceOption.PreferAlternativeCache => UserNpcVoicePreferenceFlags.PreferAlternativeCache,
+            UserNpcVoicePreferenceOption.ForceAlternativeCache => UserNpcVoicePreferenceFlags.ForceAlternativeCache,
+            _ => throw new Exception("Invalid value")
+        };
+        public static UserNpcVoicePreferenceOption Map(UserNpcVoicePreferenceFlags value) => value switch
+        {
+            UserNpcVoicePreferenceFlags.ForceElevenlabs => UserNpcVoicePreferenceOption.ForceElevenlabs,
+            UserNpcVoicePreferenceFlags.PreferElevenlabs => UserNpcVoicePreferenceOption.PreferElevenlabs,
+            UserNpcVoicePreferenceFlags.None => UserNpcVoicePreferenceOption.None,
+            UserNpcVoicePreferenceFlags.PreferAlternativeCache => UserNpcVoicePreferenceOption.PreferAlternativeCache,
+            UserNpcVoicePreferenceFlags.ForceAlternativeCache => UserNpcVoicePreferenceOption.ForceAlternativeCache,
+            _ => throw new Exception("Invalid value")
+        };
+        public static VoiceLinePriority FlagsToVoiceLinePriority(UserNpcVoicePreferenceFlags value) => (VoiceLinePriority)((int)value & (0xFFFFFFFF ^ (int)UserNpcVoicePreferenceFlags.Force));
+    }
+    #endregion
+
     public class Configuration : IPluginConfiguration {
         static bool configAlreadyLoaded = true;
         public event EventHandler OnConfigurationChanged;
@@ -35,6 +89,7 @@ namespace RoleplayingVoice {
         private int _audioOutputType = 0;
         private bool _qualityAssuranceMode;
         private float _npcSpeechSpeed = 1;
+        private UserNpcVoicePreferenceOption _userNpcVoicePreference = UserNpcVoicePreferenceOption.None;
         private int _defaultTwitchOpen;
         private bool _twitchStreamTriggersIfShouter;
         private bool _dontVoiceRetainers;
@@ -128,7 +183,7 @@ namespace RoleplayingVoice {
         public int DefaultTwitchOpen { get => _defaultTwitchOpen; set => _defaultTwitchOpen = value; }
         public bool TwitchStreamTriggersIfShouter { get => _twitchStreamTriggersIfShouter; set => _twitchStreamTriggersIfShouter = value; }
         public float NPCSpeechSpeed { get { return _npcSpeechSpeed; } set { _npcSpeechSpeed = value; } }
-
+        public UserNpcVoicePreferenceOption UserNpcVoicePreference { get { return _userNpcVoicePreference; } set { _userNpcVoicePreference = value; } }
         public bool DebugMode { get; set; }
         public bool DontVoiceRetainers { get => _dontVoiceRetainers; set => _dontVoiceRetainers = value; }
         public bool TuneIntoTwitchStreamPrompt { get => _tuneIntoTwitchStreamPrompt; set => _tuneIntoTwitchStreamPrompt = value; }
