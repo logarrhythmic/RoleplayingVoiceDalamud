@@ -89,6 +89,7 @@ namespace RoleplayingVoice {
         private bool _tuneIntoTwitchStreamPrompt;
         private bool _readQuestObjectives;
         private bool _readLocationAndToastNotifications;
+        private bool _readNarratorLines;
         private bool _performEmotesBasedOnWrittenText;
         private bool _moveSCDBasedModsToPerformanceSlider;
         private bool _npcSpeechGenerationDisabled;
@@ -100,6 +101,7 @@ namespace RoleplayingVoice {
         private float _npcPlaybackSpeed;
         private int _userNpcVoicePreferenceIndex;
         private bool _ignoreRetainerSpeech;
+        private bool _dontDoLipsync;
         private bool _debugMode;
         private FileSystemWatcher _fileSystemWatcher;
         private bool _lowPerformanceMode;
@@ -182,10 +184,12 @@ namespace RoleplayingVoice {
                     _npcPlaybackSpeed = configuration.NPCSpeechSpeed;
                     _userNpcVoicePreferenceIndex = (int)configuration.UserNpcVoicePreference;
                     _ignoreRetainerSpeech = configuration.DontVoiceRetainers;
+                    _dontDoLipsync = configuration.DontDoLipsync;
                     _debugMode = configuration.DebugMode;
                     _tuneIntoTwitchStreamPrompt = configuration.TuneIntoTwitchStreamPrompt;
                     _readQuestObjectives = configuration.ReadQuestObjectives;
                     _readLocationAndToastNotifications = configuration.ReadLocationsAndToastNotifications;
+                    _readNarratorLines = configuration.ReadNarratorLines;
                     _lowPerformanceMode = configuration.LowPerformanceMode;
                     _spatialAudioAccuracy = configuration.SpatialAudioAccuracy;
                     PluginReference.NpcPersonalityWindow.LoadNPCCharacters(configuration.CustomNpcCharacters);
@@ -441,8 +445,10 @@ namespace RoleplayingVoice {
                 ImGui.Checkbox("Turn Off NPC Dialogue", ref _npcSpeechGenerationDisabled);
                 ImGui.Combo("NPC Dialogue Source Preference", ref _userNpcVoicePreferenceIndex, UserNpcVoicePreference.Labels, UserNpcVoicePreference.Labels.Length);
                 ImGui.Checkbox("Ignore Retainer Speech", ref _ignoreRetainerSpeech);
+                ImGui.Checkbox("Disable Lipsync", ref _dontDoLipsync);
                 ImGui.Checkbox("Read Quest Objectives", ref _readQuestObjectives);
                 ImGui.Checkbox("Read Location And Toast Notifications", ref _readLocationAndToastNotifications);
+                ImGui.Checkbox("Read Other Narrator Lines", ref _readNarratorLines);
                 ImGui.Checkbox("Auto Advance Text When NPC Speech Finishes (Numpad 0)", ref _npcAutoTextAdvance);
                 ImGui.Checkbox("Allow dialogue queuing outside cutscenes", ref _allowDialogueQueueOutsideCutscenes);
                 ImGui.Checkbox("Replace A Realm Reborn Voice Acting", ref _replaceVoicedARRCutscenes);
@@ -454,7 +460,7 @@ namespace RoleplayingVoice {
                 int count = 0;
                 foreach (var item in PluginReference.AddonTalkHandler.NpcVoiceHistoryItems) {
                     ImGui.SetNextItemWidth(ImGui.GetWindowContentRegionMax().X - (ImGui.GetWindowContentRegionMax().X * (PluginReference.Config.QualityAssuranceMode ? (item.CanBeMuted ? 0.4f : 0.3f) : 0.2f)));
-                    ImGui.LabelText("##label" + item.Text, $"[{item.GenerationString.Replace("Alternate", "XIVV")}]" + item.Character + ": " + item.OriginalValue);
+                    ImGui.LabelText("##label" + item.Text, item.DisplayValue);
                     ImGui.SameLine();
                     if (ImGui.Button($"Replay Line##" + count++)) {
                         Task.Run(async () => {
@@ -713,10 +719,12 @@ namespace RoleplayingVoice {
             configuration.NPCSpeechSpeed = _npcPlaybackSpeed;
             configuration.UserNpcVoicePreference = (UserNpcVoicePreferenceOption)_userNpcVoicePreferenceIndex;
             configuration.DontVoiceRetainers = _ignoreRetainerSpeech;
+            configuration.DontDoLipsync = _dontDoLipsync;
             configuration.TuneIntoTwitchStreamPrompt = _tuneIntoTwitchStreamPrompt;
             configuration.DebugMode = _debugMode;
             configuration.ReadQuestObjectives = _readQuestObjectives;
             configuration.ReadLocationsAndToastNotifications = _readLocationAndToastNotifications;
+            configuration.ReadNarratorLines = _readNarratorLines;
             configuration.LowPerformanceMode = _lowPerformanceMode;
             configuration.SpatialAudioAccuracy = (int)_spatialAudioAccuracy;
             configuration.CustomNpcCharacters = PluginReference.NpcPersonalityWindow.CustomNpcCharacters;

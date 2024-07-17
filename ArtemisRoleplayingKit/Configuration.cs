@@ -14,49 +14,57 @@ namespace RoleplayingVoice {
     public enum UserNpcVoicePreferenceFlags
     {
         PreferElevenlabs = VoiceLinePriority.Elevenlabs,
-        PreferAlternativeCache = VoiceLinePriority.AlternativeCache,
+        PreferAlternative = VoiceLinePriority.Alternative,
         PreferXTTS = VoiceLinePriority.XTTS,
         None = VoiceLinePriority.None,
         Force = 0x80,
         ForceElevenlabs = VoiceLinePriority.Elevenlabs | Force,
-        ForceAlternativeCache = VoiceLinePriority.AlternativeCache | Force,
+        ForceAlternative = VoiceLinePriority.Alternative | Force,
         ForceXTTS = VoiceLinePriority.XTTS | Force
     }
 
     public enum UserNpcVoicePreferenceOption
     {
-        ForceElevenlabs = 0,
-        PreferElevenlabs = 1,
-        None = 2,
-        PreferAlternativeCache = 3,
-        ForceAlternativeCache = 4
+        None,
+        PreferElevenlabs,
+        PreferAlternative,
+        PreferXTTS,
+        ForceElevenlabs,
+        ForceAlternative,
+        ForceXTTS
     }
 
     public static class UserNpcVoicePreference
     {
         public static string[] Labels = new[] {
-            "Force ARK",
-            "Prefer ARK",
             "Default",
-            "Prefer XIVV",
-            "Force XIVV"
+            "Request Elevenlabs when other rules don't apply",
+            "Request XIVV when other rules don't apply",
+            "Request XTTS when other rules don't apply (Generated on demand by ARK Server)",
+            "Always request Elevenlabs",
+            "Always request XIVV",
+            "Always request XTTS (Generated on demand by ARK Server)"
         };
         public static UserNpcVoicePreferenceFlags Map(UserNpcVoicePreferenceOption value) => value switch
         {
-            UserNpcVoicePreferenceOption.ForceElevenlabs => UserNpcVoicePreferenceFlags.ForceElevenlabs,
-            UserNpcVoicePreferenceOption.PreferElevenlabs => UserNpcVoicePreferenceFlags.PreferElevenlabs,
             UserNpcVoicePreferenceOption.None => UserNpcVoicePreferenceFlags.None,
-            UserNpcVoicePreferenceOption.PreferAlternativeCache => UserNpcVoicePreferenceFlags.PreferAlternativeCache,
-            UserNpcVoicePreferenceOption.ForceAlternativeCache => UserNpcVoicePreferenceFlags.ForceAlternativeCache,
+            UserNpcVoicePreferenceOption.PreferElevenlabs => UserNpcVoicePreferenceFlags.PreferElevenlabs,
+            UserNpcVoicePreferenceOption.PreferAlternative => UserNpcVoicePreferenceFlags.PreferAlternative,
+            UserNpcVoicePreferenceOption.PreferXTTS => UserNpcVoicePreferenceFlags.PreferXTTS,
+            UserNpcVoicePreferenceOption.ForceElevenlabs => UserNpcVoicePreferenceFlags.ForceElevenlabs,
+            UserNpcVoicePreferenceOption.ForceAlternative => UserNpcVoicePreferenceFlags.ForceAlternative,
+            UserNpcVoicePreferenceOption.ForceXTTS => UserNpcVoicePreferenceFlags.ForceXTTS,
             _ => throw new Exception("Invalid value")
         };
         public static UserNpcVoicePreferenceOption Map(UserNpcVoicePreferenceFlags value) => value switch
         {
-            UserNpcVoicePreferenceFlags.ForceElevenlabs => UserNpcVoicePreferenceOption.ForceElevenlabs,
-            UserNpcVoicePreferenceFlags.PreferElevenlabs => UserNpcVoicePreferenceOption.PreferElevenlabs,
             UserNpcVoicePreferenceFlags.None => UserNpcVoicePreferenceOption.None,
-            UserNpcVoicePreferenceFlags.PreferAlternativeCache => UserNpcVoicePreferenceOption.PreferAlternativeCache,
-            UserNpcVoicePreferenceFlags.ForceAlternativeCache => UserNpcVoicePreferenceOption.ForceAlternativeCache,
+            UserNpcVoicePreferenceFlags.PreferElevenlabs => UserNpcVoicePreferenceOption.PreferElevenlabs,
+            UserNpcVoicePreferenceFlags.PreferAlternative => UserNpcVoicePreferenceOption.PreferAlternative,
+            UserNpcVoicePreferenceFlags.PreferXTTS => UserNpcVoicePreferenceOption.PreferXTTS,
+            UserNpcVoicePreferenceFlags.ForceElevenlabs => UserNpcVoicePreferenceOption.ForceElevenlabs,
+            UserNpcVoicePreferenceFlags.ForceAlternative => UserNpcVoicePreferenceOption.ForceAlternative,
+            UserNpcVoicePreferenceFlags.ForceXTTS => UserNpcVoicePreferenceOption.ForceXTTS,
             _ => throw new Exception("Invalid value")
         };
         public static VoiceLinePriority FlagsToVoiceLinePriority(UserNpcVoicePreferenceFlags value) => (VoiceLinePriority)((int)value & (0xFFFFFFFF ^ (int)UserNpcVoicePreferenceFlags.Force));
@@ -93,9 +101,11 @@ namespace RoleplayingVoice {
         private int _defaultTwitchOpen;
         private bool _twitchStreamTriggersIfShouter;
         private bool _dontVoiceRetainers;
+        private bool _dontDoLipsync;
         private bool _tuneIntoTwitchStreamPrompt = true;
         private bool _readQuestObjectives = true;
         private bool _readLocationsAndToastNotifications = false;
+        private bool _readNarratorLines = true;
         private bool _lowPerformanceMode;
         private int _spatialAudioAccuracy = 100;
 
@@ -187,9 +197,11 @@ namespace RoleplayingVoice {
         public UserNpcVoicePreferenceOption UserNpcVoicePreference { get { return _userNpcVoicePreference; } set { _userNpcVoicePreference = value; } }
         public bool DebugMode { get; set; }
         public bool DontVoiceRetainers { get => _dontVoiceRetainers; set => _dontVoiceRetainers = value; }
+        public bool DontDoLipsync { get => _dontDoLipsync; set => _dontDoLipsync = value; }
         public bool TuneIntoTwitchStreamPrompt { get => _tuneIntoTwitchStreamPrompt; set => _tuneIntoTwitchStreamPrompt = value; }
         public bool ReadQuestObjectives { get => _readQuestObjectives; set => _readQuestObjectives = value; }
         public bool ReadLocationsAndToastNotifications { get => _readLocationsAndToastNotifications; set => _readLocationsAndToastNotifications = value; }
+        public bool ReadNarratorLines { get => _readNarratorLines; set => _readNarratorLines = value; }
         public bool LowPerformanceMode { get => _lowPerformanceMode; set => _lowPerformanceMode = value; }
         public int SpatialAudioAccuracy { get => _spatialAudioAccuracy; set => _spatialAudioAccuracy = value; }
         public List<CustomNpcCharacter> CustomNpcCharacters { get => _customNpcCharacters; set => _customNpcCharacters = value; }

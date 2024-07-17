@@ -45,5 +45,6 @@ namespace RoleplayingVoiceDalamud.Voice {
         public bool RedoLine { get => _redoLine; set => _redoLine = value; }
         public bool CanBeMuted { get => _canBeMuted; set => _canBeMuted = value; }
         public string GenerationString { get => _generationString; set => _generationString = value; }
+        public string DisplayValue => $"[{GenerationString.Replace("Alternate", "XIVV")}]" + Character + ": " + OriginalValue;
     }
 }
