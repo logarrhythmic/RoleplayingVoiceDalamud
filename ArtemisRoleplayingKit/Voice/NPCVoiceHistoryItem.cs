@@ -15,10 +15,12 @@ namespace RoleplayingVoiceDalamud.Voice {
         bool _fastSpeed;
         string _extraJson;
         bool _redoLine;
+        bool _canBeMuted;
+        private string _generationString;
 
         public NPCVoiceHistoryItem(string text, string originalValue, string character, 
             bool gender, string backupVoice, bool aggressiveCache, bool fastSpeed, 
-            string extraJson, bool redoLine) {
+            string extraJson, bool redoLine, bool canBeMuted, string generationString) {
             _text = text;
             _originalValue = originalValue;
             _character = character;
@@ -28,6 +30,8 @@ namespace RoleplayingVoiceDalamud.Voice {
             _fastSpeed = fastSpeed;
             _extraJson = extraJson;
             _redoLine = redoLine;
+            _canBeMuted = canBeMuted;
+            _generationString = generationString;
         }
 
         public string Text { get => _text; set => _text = value; }
@@ -39,5 +43,7 @@ namespace RoleplayingVoiceDalamud.Voice {
         public bool FastSpeed { get => _fastSpeed; set => _fastSpeed = value; }
         public string ExtraJson { get => _extraJson; set => _extraJson = value; }
         public bool RedoLine { get => _redoLine; set => _redoLine = value; }
+        public bool CanBeMuted { get => _canBeMuted; set => _canBeMuted = value; }
+        public string GenerationString { get => _generationString; set => _generationString = value; }
     }
 }

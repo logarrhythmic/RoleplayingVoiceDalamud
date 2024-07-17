@@ -169,6 +169,7 @@
     "Runar": "Rar",
     "Estinien": "Ewyrm",
     "Ysayle": "Ydango",
+    "Shiva": "Ydango",
     "Iceheart": "Ydango",
     "Count Edmont de Fortemps": "Edefort",
     "Emmanellain": "Emmdefort",
@@ -240,12 +241,19 @@
     "Tobli": 0,
     "Tataru": 1,
     "Gaius van Baelsar": 1,
-    "Mablu": 1,
+    "Mablu": 0,
     "Chocobokeep": 0,
+    "Skywatcher": 0,
     "Ilberd": 1,
     "Gaia": 1,
     "Bandit Leader": 0,
-    "Lahabrea": 1
+    "Lahabrea": 1,
+    "Wuk Lamat": 1,
+    "Momodi": 0,
+    "Hildebrand": 1,
+    "Nashu": 1,
+    "Godbert": 1,
+    "Gegeruju Manor Guard": 0
   },
   "NameAndAliasesList": {
     "Ungust": [
